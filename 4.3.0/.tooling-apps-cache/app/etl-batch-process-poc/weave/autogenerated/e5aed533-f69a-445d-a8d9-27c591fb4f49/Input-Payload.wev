@@ -1,4 +1,0 @@
-%dw 2.0
-
-type auto_e5aed533_f69a_445d_a8d9_27c591fb4f49_Input_Payload = Array<{|  NN: Number {"typeId": "int"},   CustomerName: String,   OrderNumber: String,   Delivered: String,   TotalAmount: Number {"typeId": "double"},   Category: String,   Country: String|}> {"iterator": "true"}
-
