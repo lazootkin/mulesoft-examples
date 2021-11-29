@@ -1,0 +1,14 @@
+%dw 2.0
+
+type auto_8f540516_6e41_4009_a5a5_eb627a3a346e_Output_Variables_records = Array<{|  message: org_mule_runtime_api_message_Message,   variables: {|  |}|}>
+type org_mule_runtime_api_message_Message = {|
+  payload: {|
+    name: String, 
+    amount: Number {"typeId": "double"}, 
+    good: String
+  |}, 
+  attributes: Null
+|} {"typeId": "org.mule.runtime.api.message.Message"}
+
+
+
