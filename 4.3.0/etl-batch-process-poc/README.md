@@ -13,6 +13,7 @@ Related links to documentation are
 
 In this example, by hitting an HTTPS endpoint a user will attempt to transform data file from csv to text, json to text, xml to text. Input files contains small content 1000 rows but it can be extented manually at will in src/main/resources/data-in
 
+Open in browser :
 http://localhost:8081/api/etl?sourceFile=WriteLines_010.csv
 http://localhost:8081/api/etl?sourceFile=WriteLines_010.json
 http://localhost:8081/api/etl?sourceFile=WriteLines_010.xml
