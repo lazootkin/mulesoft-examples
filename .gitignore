@@ -11,6 +11,7 @@
 *.pydevproject
 .metadata
 .mule
+.tooling-apps-cache
 bin/**
 tmp/**
 tmp/**/*
