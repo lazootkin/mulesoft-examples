@@ -10,6 +10,7 @@
 # --- #
 *.pydevproject
 .metadata
+.mule
 bin/**
 tmp/**
 tmp/**/*
