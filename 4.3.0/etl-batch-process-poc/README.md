@@ -1,5 +1,5 @@
 
-# ETL Batch processing with Mulesoft, stream 
+# ETL Batch processing using streaming in Mulesoft
 
 From time to time you are faced with a requirement to load some file content from system A to system B. This example application illustrates how process big file content using Mule ESB. By 'big' I mean the file size is bigger than jvm allocated virtual memory.
 
