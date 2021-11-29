@@ -304,8 +304,8 @@ var fileSeparator = server.fileSeparator default "/"
 output application/json
 ---
 {
-	sourceFileName: vars.endpointFiles.sourceName replace fileSeparator with "/",
-	destinationFileName: vars.endpointFiles.destinationName replace fileSeparator with "/",
+	sourceFileName: "file:///" ++ vars.endpointFiles.sourceName replace fileSeparator with "/",
+	destinationFileName: "file:///" ++ vars.endpointFiles.destinationName replace fileSeparator with "/",
 	batchJobResultObject : payload,
 }]]></ee:set-payload>
       </ee:message>
