@@ -1,0 +1,10 @@
+sftp:
+    process:
+       sourceDir: "/home/leo/data/sftpusers/"
+       destinationDir: "/tmp/sftpout/"
+    host:
+        name: "fill with your values for example 10.1.2.100"
+        port: "22"
+    user:
+        name: "fill with your values for example john"
+        password: "fill with your values for example doom12"

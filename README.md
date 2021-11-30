@@ -1,2 +1,2 @@
 
-# Mulesoft examples here in the repositdory
+# Mulesoft examples here in the repository

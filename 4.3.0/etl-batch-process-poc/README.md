@@ -6,17 +6,17 @@ From time to time you are faced with a requirement to load some file content fro
 ### Assumptions
 
 Related links to documentation are 
-[Streaming in Mule Apps](https://docs.mulesoft.com/mule-runtime/4.3/streaming-about)
+[Streaming in Mule Apps](https://docs.mulesoft.com/mule-runtime/4.3/streaming-about),
 [Batch Processing](https://docs.mulesoft.com/mule-runtime/4.3/batch-processing-concept)
 
 ### Example Use Case
 
 In this example, by hitting an HTTPS endpoint a user will attempt to transform data file from csv to text, json to text, xml to text. Input files contains small content 1000 rows but it can be extented manually at will in src/main/resources/data-in
 
-Open in browser :
-http://localhost:8081/api/etl?sourceFile=WriteLines_010.csv
-http://localhost:8081/api/etl?sourceFile=WriteLines_010.json
-http://localhost:8081/api/etl?sourceFile=WriteLines_010.xml
+Open in browser :<br/>
+http://localhost:8081/api/etl/localfile?sourceFile=WriteLines_010.xml <br/> 
+http://localhost:8081/api/etl/localfile?sourceFile=WriteLines_010.json <br/> 
+http://localhost:8081/api/etl/localfile?sourceFile=WriteLines_010.csv
 
 
 ### Set Up and Run the Example ###
@@ -46,6 +46,14 @@ in json response obtain the input/output file in column 'destinationFileName'
 open WriteLines_010.csv and WriteLines_010.csv.out in editor and look at the file content before and after transformation 
 
 
+### Added the same example working with sftp
+
+This is advanced part, it need some experience working with sftp connector. Before run open config-dev.yaml and fill the sftp connection details
+
+Open in browser :<br/> 
+http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.xml <br/> 
+http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.json <br/> 
+http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.csv
 
 
 

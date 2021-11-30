@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+
+	<flow name="etl-batch-process-sftp-job-flow"
+		doc:id="e5aed533-f69a-445d-a8d9-27c591fb4f49">
+
+		<batch:job jobName="etl-batch-process-sftp-job-flow-batch"
+			doc:id="08801edb-9e09-4436-a1d3-bbf0f1f14522">
+
+			<batch:process-records>
+				<batch:step name="Batch_Step"
+					doc:id="8e349a5d-45b7-4fd6-8842-1de3b65660d5">
+					<ee:transform doc:name="someMapInBatchStep"
+						doc:id="b13004e9-3246-4e04-834a-643b89546a0c">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	name: payload.CustomerName,
+	amount: payload.TotalAmount,
+	good: payload.Category
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+
+					<batch:aggregator doc:name="Batch Aggregator"
+						doc:id="450d51ed-e89b-4bff-b592-1ce6bc039c74" size="200">
+
+						<logger level="INFO" doc:name="Logger"
+							doc:id="8bb86b28-84a1-4799-a46f-c32c7e87dd8f"
+							message="batch aggregator, size of aggregator message -  #[output application/json --- sizeOf (payload)]"
+							category="com.lazootkin.mule.etl" />
+
+						<ee:transform doc:name="reduce"
+							doc:id="c8ef0593-af43-4011-84c6-a628427d59eb">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+import java!java::lang::System
+output text/plain
+---
+(payload map {
+	a: $.name ++ 
+	" ordered some goods from category " ++  
+	$.good   ++ 
+	" in the amount of " ++
+	$.amount ++
+	" usd"
+})
+reduce ((item, acc = "") -> acc ++ System::lineSeparator() ++ item.a)]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+
+						<flow-ref doc:name="writePayloadIntoFile"
+							doc:id="48826ebc-a54c-4ad2-9924-a6f68ddb54ca"
+							name="etl-batch-process-sftp-write-local-file" />
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+
+			<batch:on-complete>
+
+				<ee:transform doc:name="batchJobResultObject"
+					doc:id="f118c40d-5668-4666-8763-48abcafb8f1d">
+
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+
+				</ee:transform>
+
+				<logger level="INFO" doc:name="Logger"
+					doc:id="8aa48cdf-547b-4f24-b82a-6e6343cea760"
+					message="OnComplete, batchJobResultObject - #[payload]"
+					category="com.lazootkin.mule.etl" />
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+	<sub-flow name="etl-batch-process-sftp-write-local-file"
+		doc:id="8f540516-6e41-4009-a5a5-eb627a3a346e">
+		<sftp:write doc:name="Write" doc:id="50db3d16-841e-4382-9490-da6795dcad4e" path="#[vars.endpointFiles.destinationName]" mode="APPEND" config-ref="SFTP_Config"/>
+	</sub-flow>
+	<sub-flow name="etl-batch-process-sftp-get-local-file-stream"
+		doc:id="1624db61-bc9b-4f18-9c29-6be60b5c8c78">
+
+		<choice doc:name="Choice"
+			doc:id="4c85b4ff-0105-4af7-b146-e47c7f67d4ed">
+
+			<when expression="#[vars.endpointFiles.isJson]">
+				<sftp:read doc:name="readJson" doc:id="80716823-8d31-4ed1-a9a3-4f1245703937" config-ref="SFTP_Config" path="#[vars.endpointFiles.sourceName]" outputMimeType="application/json">
+					<non-repeatable-stream />
+				</sftp:read>
+				<logger level="INFO" doc:name="Logger"
+					doc:id="c99f6609-4591-4eb3-8535-3c4def58de69"
+					category="com.lazootkin.mule.etl"
+					message="trying to mark json payload as Iterator" />
+
+				<ee:transform doc:name="arrayAsIterator"
+					doc:id="44ad56ef-f66e-47fc-948c-6b9a9cc4f19c">
+
+					<ee:message>
+
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload.array as Iterator]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+
+			<when expression="#[vars.endpointFiles.isCsv]">
+
+				<sftp:read doc:name="readCsv" doc:id="aa74e65a-e3dd-4703-8be6-dc5ea9065d18" config-ref="SFTP_Config" path="#[vars.endpointFiles.sourceName]" outputMimeType="application/csv">
+					<non-repeatable-stream />
+				</sftp:read>
+				<logger level="INFO" doc:name="Logger"
+					doc:id="d2bf42e6-60b6-44bc-a973-960f199ef3c2"
+					message="trying to mark csv payload as Iterator"
+					category="com.lazootkin.mule.etl" />
+
+				<ee:transform doc:name="arrayAsIterator"
+					doc:id="19f7ef8f-af97-4b68-a78e-b591a387ea88">
+
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+payload as Iterator]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression="#[vars.endpointFiles.isXml]">
+
+				<sftp:read doc:name="readXml" doc:id="c60e9635-5858-443a-9a98-fefda1d53b7f" config-ref="SFTP_Config" path="#[vars.endpointFiles.sourceName]" outputMimeType="application/xml">
+					<non-repeatable-stream />
+				</sftp:read>
+				<logger level="INFO" doc:name="Logger"
+					doc:id="4bd1c7a2-9024-45eb-aef9-be2d987cc9eb"
+					category="com.lazootkin.mule.etl"
+					message="trying to make array from duplicated tags" />
+
+				<ee:transform doc:name="arrayAsIterator"
+					doc:id="e34e600c-d968-4604-acb8-db53dd973d12">
+					<ee:message>
+
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java 
+---
+payload.array.*element as Iterator]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<raise-error doc:name="Raise error"
+					doc:id="1eed284f-02cb-4a66-834f-a5c0ce1d2d92"
+					type="ORDER:UNSUPPORTED_FORMAT" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+
+	<flow name="etl-batch-process-sftp-flow"
+		doc:id="1343dfad-1109-4cd0-9701-e49c023b9fdf">
+
+		<http:listener doc:name="Listener"
+			doc:id="d690d96f-2098-4515-92fc-33557c00e99d" path="/etl/sftpfile" config-ref="HTTP_Listener_config">
+			<http:response statusCode="#[vars.httpStatus]" />
+		</http:listener>
+
+		<logger level="INFO" doc:name="Logger"
+			doc:id="860b3f2c-dd8f-43eb-8d64-75a427997eae"
+			message="start main etl flow" category="com.lazootkin.mule.etl" />
+
+		<ee:transform doc:name="endpointFiles"
+			doc:id="d2e68a4f-a899-40b7-98b0-446cc71e0d9e">
+			<ee:message>
+			</ee:message>
+
+			<ee:variables>
+				<ee:set-variable variableName="endpointFiles"><![CDATA[%dw 2.0
+var sourceFile = attributes.queryParams.sourceFile default "undefined.in"
+var destFile = (attributes.queryParams.sourceFile default "undefined") ++ ".out"
+var userDir = mule.home default "/tmp"
+var fileSeparator = server.fileSeparator default "\\"
+var inFolder =  p("sftp.process.sourceDir")
+var outFolder = p("sftp.process.destinationDir")
+output application/java 
+---
+{
+		sourceName: inFolder ++ sourceFile,
+		destinationName:  outFolder ++ destFile,
+		isJson: sourceFile endsWith ".json",
+		isXml: sourceFile endsWith ".xml",
+		isCsv: sourceFile endsWith ".csv",
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+
+		<logger level="INFO" doc:name="Logger"
+			doc:id="25adb80f-70d5-4db3-84a8-acada92a7409"
+			message="reading local file - #[vars.endpointFiles.sourceName]"
+			category="com.lazootkin.mule.etl" />
+
+		<flow-ref doc:name="getFileStream"
+			doc:id="11670234-47d2-4e64-b0ef-ed01dadd1e7a"
+			name="etl-batch-process-sftp-get-local-file-stream" />
+
+		<flow-ref doc:name="batch-job"
+			doc:id="c3137152-f3bf-4417-a27d-c08771b2ebd3"
+			name="etl-batch-process-sftp-job-flow" />
+
+		<ee:transform doc:name="batchJobResultObject"
+			doc:id="7d3c4e88-1a96-4e5e-b990-3055d8f8ea03">
+
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+var fileSeparator = server.fileSeparator default "/"
+output application/json
+---
+{
+	sourceFileName: "file:///" ++ vars.endpointFiles.sourceName replace fileSeparator with "/",
+	destinationFileName: "file:///" ++ vars.endpointFiles.destinationName replace fileSeparator with "/",
+	batchJobResultObject : payload,
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+
+		<logger level="INFO" doc:name="Logger"
+			doc:id="8eef6d21-95aa-4624-a60d-cc28fdef77f9"
+			message="stop main etl flow" category="com.lazootkin.mule.etl" />
+		<error-handler>
+			<on-error-continue enableNotifications="true"
+				logException="true" doc:name="On Error Continue"
+				doc:id="71824c90-88c3-4e53-8743-ce27cae40442">
+				<ee:transform doc:name="error"
+					doc:id="bc30a1d8-6319-4901-aa9e-01be8c62fcda">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+error]]></ee:set-payload>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
+output application/java
+---
+400]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+
+				<logger level="INFO" doc:name="Logger"
+					doc:id="a64f245e-f8f8-4122-b327-1302787e3293"
+					message="failed main etl flow " category="com.lazootkin.mule.etl" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>
