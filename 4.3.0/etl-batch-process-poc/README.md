@@ -36,8 +36,8 @@ if you see some json in response with column "status": "EXECUTING" then all prev
 in json response obtain the input/output file in column 'destinationFileName' 
 
 {
-  "sourceFileName": "D:/var/PF/AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-in/WriteLines_010.csv",
-  "destinationFileName": "D:/var/PF/AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-out/WriteLines_010.csv.out",
+  "sourceFileName": "D:/../AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-in/WriteLines_010.csv",
+  "destinationFileName": "D:/../AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-out/WriteLines_010.csv.out",
   "batchJobResultObject": {
     "creationTime": "2021-11-2 
     .....
