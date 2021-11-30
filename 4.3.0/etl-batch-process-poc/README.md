@@ -29,7 +29,7 @@ start the etl-batch-process-poc mulesoft project.
 
 open browser for example chrome
 
-fill address with http://localhost:8081/api/etl?sourceFile=WriteLines_010.csv press enter 
+fill address with http://localhost:8081/api/etl/localfile?sourceFile=WriteLines_010.csv press enter 
 
 if you see some json in response with column "status": "EXECUTING" then all previous steps was successfull, now
 
