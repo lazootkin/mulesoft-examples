@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<munit:config name="etl-batch-process-local-suite.xml" />
+	<munit:test name="etl-batch-process-local-flow-test" doc:id="7b41f15d-0dcc-4980-ae56-2d2cec058af6" >
+		<munit:behavior >
+			<munit-tools:spy doc:name="Spy" doc:id="b07798d3-af06-4925-ae14-e61ef92d02cc" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="batch-job" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c3137152-f3bf-4417-a27d-c08771b2ebd3" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="etl-batch-process-local-job-flow" attributeName="name" />
+					<munit-tools:with-attribute whereValue="batch-job" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c3137152-f3bf-4417-a27d-c08771b2ebd3" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="etl-batch-process-local-job-flow" attributeName="name" />
+					<munit-tools:with-attribute whereValue="batch-job" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c3137152-f3bf-4417-a27d-c08771b2ebd3" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="etl-batch-process-local-job-flow" attributeName="name" />
+					<munit-tools:with-attribute whereValue="batch-job" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c3137152-f3bf-4417-a27d-c08771b2ebd3" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="etl-batch-process-local-job-flow" attributeName="name" />
+					<munit-tools:with-attribute whereValue="batch-job" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="c3137152-f3bf-4417-a27d-c08771b2ebd3" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="etl-batch-process-local-job-flow" attributeName="name" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<logger level="INFO" doc:name="Logger" doc:id="6e3882c6-f075-453a-bef0-ce1804820bda" message="spy before batch" category="com.lazootkin.mule.etl"/>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<logger level="INFO" doc:name="Logger" doc:id="b2a64631-d763-4057-b919-7c24e8c8bb45" message="spy after batch, before sleep" category="com.lazootkin.mule.etl"/>
+					<munit-tools:sleep time="5000" doc:name="Sleep" doc:id="63dc4d27-85ed-46d6-96b1-ae55a2dbb022" />
+					<logger level="INFO" doc:name="Logger" doc:id="fff572bc-7fdd-47ec-afca-7e7296dd08b8" message="spy after batch, after sleep" category="com.lazootkin.mule.etl"/>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit:set-event doc:name="Set Input" doc:id="98b64618-fe4c-40eb-ae05-daadd4e61c2c" >
+				<munit:payload value="#[output application/json --- readUrl('classpath://etlbatchprocesslocalflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				<munit:attributes value="#[readUrl('classpath://etlbatchprocesslocalflowtest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to etl-batch-process-local-flow" doc:id="b3ca43bb-9d53-4b00-b11d-e24eb56c93d2" name="etl-batch-process-local-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="fb9d56cf-b0fe-452c-80da-1da7e7c18fcc" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import etlbatchprocesslocalflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:assert doc:name="Assert variables" doc:id="2ad18141-8d82-40b8-915f-999c2a58af69" message="The variables do not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import etlbatchprocesslocalflowtest::assert_expression_variables
+---
+assert_expression_variables::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<file:list doc:name="List" doc:id="bc38fb17-c0e7-4e78-9d9e-84dfd2bb4c9e" directoryPath="#['C:/Users/Leonard_Lazutkin1/AppData/Local/Temp/munit-temp-dir/munitworkingdir10241517171677071204/container/apps/etl-batch-process-poc/data-out/']"/>
+			<munit-tools:assert-that doc:name='endsWith("WriteLines_010.json.out")' doc:id="9671eead-8aac-4058-958b-235e0242ad8b" expression="#[payload[0].attributes.name]" is='#[MunitTools::endsWith("WriteLines_010.json.out")]'/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
