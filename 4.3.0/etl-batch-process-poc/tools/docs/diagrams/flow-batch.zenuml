@@ -1,0 +1,20 @@
+
+BatchJob.start(){
+ // parallel, async
+ BatchStepThreads.processRecords(){
+   // step
+      loop (QueueIsNotEmpty){
+        Line = QueueClient.dequeue(); 
+      } 
+    } 
+       // parallel, async
+   BatchAggregatorThreads.aggregate(){ 
+  // aggregate 
+   loop (WaitForBatchStepsResult){
+          OutputFile.append(Lines);      
+   }
+   }
+  // All batch steps and aggregators are finished 
+  BatchJob.WaitFor(BatchJobResultObject); 
+  BatchCompleter.complete(BatchJobResultObject);
+}

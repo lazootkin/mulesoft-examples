@@ -1,0 +1,17 @@
+
+// An example for a RESTful endpoint<br>
+// Go to the "Cheat sheet" tab or https://docs.zenuml.com
+// to find all syntax<br>
+// `POST /api/etl/localfile?fileName={fileName}`
+
+
+Listener.listen(fileName, mediaType) { 
+  fileStream = FileReader.getUnrepeatableStream(fileName, mediaType) 
+  BatchJob.run(fileStream){ 
+    loop (! EOF){
+      Line = FileStream.ReadLine()
+      QueueClient.enqueue(Line)
+    } 
+    return BatchStartedSuccessfully_201 
+  } 
+}
