@@ -55,5 +55,5 @@ http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.xml <br/>
 http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.json <br/> 
 http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.csv
 
-
-
+# Sequence Diagram
+![alt text](https://github.com/lazootkin/mulesoft-examples/4.3.0/etl-batch-process-poc/tools/docs/diagrams/flow-main.png?raw=true)
