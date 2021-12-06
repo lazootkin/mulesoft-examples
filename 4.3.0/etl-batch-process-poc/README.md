@@ -29,15 +29,15 @@ start the etl-batch-process-poc mulesoft project.
 
 open browser for example chrome
 
-fill address with http://localhost:8081/api/etl?sourceFile=WriteLines_010.csv press enter 
+fill address with http://localhost:8081/api/etl/localfile?sourceFile=WriteLines_010.csv press enter 
 
 if you see some json in response with column "status": "EXECUTING" then all previous steps was successfull, now
 
 in json response obtain the input/output file in column 'destinationFileName' 
 
 {
-  "sourceFileName": "D:/var/PF/AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-in/WriteLines_010.csv",
-  "destinationFileName": "D:/var/PF/AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-out/WriteLines_010.csv.out",
+  "sourceFileName": "D:/../AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-in/WriteLines_010.csv",
+  "destinationFileName": "D:/../AnypointStudio7/plugins/org.mule.tooling.server.4.3.0.ee_7.3.5.202110271734/mule/apps/etl-batch-process-poc/data-out/WriteLines_010.csv.out",
   "batchJobResultObject": {
     "creationTime": "2021-11-2 
     .....
