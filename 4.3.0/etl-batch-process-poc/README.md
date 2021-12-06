@@ -60,7 +60,7 @@ http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.csv
 ![Main Flow](./tools/docs/diagrams/flow-main.png)
 <br/>
 ### Subflow with batch job <br/>
-![Batch Flow](./tools/docs/diagrams/flow-main.png)
+![Batch Flow](./tools/docs/diagrams/flow-batch.png)
 
 # Mule Flow
 ![Flows preview](./tools/docs/diagrams/flows-preview.png)
