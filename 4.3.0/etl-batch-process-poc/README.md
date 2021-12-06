@@ -56,7 +56,12 @@ http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.json <br/>
 http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.csv
 
 # Sequence Diagram
-<br/> Main Flow
-![Main Flow](https://github.com/lazootkin/mulesoft-examples/blob/develop/4.3.0/etl-batch-process-poc/tools/docs/diagrams/flow-main.png)
-<br/> Subflow with batch job
-![Batch Flow](https://github.com/lazootkin/mulesoft-examples/blob/develop/4.3.0/etl-batch-process-poc/tools/docs/diagrams/flow-batch.png)
+### Main Flow <br/>
+![Main Flow](./tools/docs/diagrams/flow-main.png)
+<br/>
+### Subflow with batch job <br/>
+![Batch Flow](./tools/docs/diagrams/flow-main.png)
+
+# Mule Flow
+![Flows preview](./tools/docs/diagrams/flows-preview.png)
+
