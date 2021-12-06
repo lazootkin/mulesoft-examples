@@ -56,9 +56,8 @@ http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.json <br/>
 http://localhost:8081/api/etl/sftpfile?sourceFile=WriteLines_010.csv
 
 # Sequence Diagram
-<br/> Main Flow
+Main Flow <br/>
 ![Main Flow](./tools/docs/diagrams/flow-main.png)
-
-
-<br/> Subflow with batch job
+<br/>
+Subflow with batch job <br/>
 ![Batch Flow](./tools/docs/diagrams/flow-main.png)
