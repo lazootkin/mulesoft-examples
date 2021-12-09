@@ -96,7 +96,7 @@ payload]]></ee:set-payload>
 
 		<file:write doc:name="Write"
 			doc:id="e84adeea-c1fc-47e0-a1e4-4d5e9add3e35"
-			path="#[vars.endpointFiles.destinationName]" mode="APPEND"/>
+			path="#[vars.endpointFiles.destinationName]" mode="APPEND" lock="true"/>
 	</sub-flow>
 	<sub-flow name="etl-batch-process-local-get-local-file-stream"
 		doc:id="1624db61-bc9b-4f18-9c29-6be60b5c8c78">
@@ -209,10 +209,10 @@ payload.array.*element as Iterator]]></ee:set-payload>
 output application/java
 var sourceFile = attributes.queryParams.sourceFile default "undefined.in"
 var destFile = (attributes.queryParams.sourceFile default "undefined") ++ ".out"
-var userDir = mule.home default "/tmp"
+var workdir = mule.home default "/tmp"
 var fileSeparator = server.fileSeparator default "\\"
-var inFolder = userDir ++ ("/apps/etl-batch-process-poc/data-in/" replace "/" with fileSeparator)
-var outFolder = userDir ++ ("/apps/etl-batch-process-poc/data-out/" replace "/" with fileSeparator)
+var inFolder = workdir ++ ("/apps/etl-batch-process-poc/data-in/" replace "/" with fileSeparator)
+var outFolder = workdir ++ ("/apps/etl-batch-process-poc/data-out/" replace "/" with fileSeparator)
 ---
 {
 		sourceName: inFolder ++ sourceFile,

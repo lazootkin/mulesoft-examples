@@ -60,7 +60,17 @@ import etlbatchprocesslocalflowtest::assert_expression_variables
 ---
 assert_expression_variables::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
 			</munit-tools:assert>
-			<file:list doc:name="List" doc:id="bc38fb17-c0e7-4e78-9d9e-84dfd2bb4c9e" directoryPath="#['C:/Users/Leonard_Lazutkin1/AppData/Local/Temp/munit-temp-dir/munitworkingdir10241517171677071204/container/apps/etl-batch-process-poc/data-out/']"/>
+			<ee:transform doc:name="data-out path" doc:id="42889d1a-7506-42a0-977e-6ca8440d7aad" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+--- 
+(  (mule.home default "")
+++ "/apps/etl-batch-process-poc/data-out/"
+) as String]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<file:list doc:name="List" doc:id="bc38fb17-c0e7-4e78-9d9e-84dfd2bb4c9e" directoryPath='#[payload]'/>
 			<munit-tools:assert-that doc:name='endsWith("WriteLines_010.json.out")' doc:id="9671eead-8aac-4058-958b-235e0242ad8b" expression="#[payload[0].attributes.name]" is='#[MunitTools::endsWith("WriteLines_010.json.out")]'/>
 		</munit:validation>
 	</munit:test>
